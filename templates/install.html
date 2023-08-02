@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/bulma.css">
+    <script type="application/javascript">
+        if (window.location.search === "?error=error_db"){
+            alert("Un problème à été détecté avec la base de donnée. Verifier les identifiants et l'addresse de connection de la base de donneé")
+        }
+    </script>
+    <title>Cantina - Installateur</title>
+</head>
+<body class="has-text-centered">
+    <div id="header">
+        <h1 class="title columns is-centered is-vcentered" style="text-decoration: underline; padding-top: 1em;">Cantina - Installateur</h1><br>
+    </div>
+    <div id="form" class="columns is-centered is-vcentered">
+        <form action="#" method="post">
+            <h1 class="is-size-3">Compte administrateur</h1>
+            <h3 class="is-size-4">Nom d'utilisateur:</h3>
+            <label>
+                <input class="input" style="margin-bottom: 1em" type='text' name='username_admin' required/>
+            </label>
+            <h3 class="is-size-4">Mots de passe:</h3>
+            <label>
+                <input class="input" style="margin-bottom: 1em" type='password' name='password_admin' required/>
+            </label>
+            <h3 class="is-size-4">Addresse E-Mail:</h3>
+            <label>
+                <input class="input" style="margin-bottom: 1em" type='email' name='email_admin' required/>
+            </label>
+
+            <h1 class="is-size-3">Base de donnée (MySQL)</h1>
+            <h3 class="is-size-4">Nom d'utilisateur:</h3>
+            <label>
+                <input class="input" style="margin-bottom: 1em" type='text' name='username_db' required/>
+            </label>
+            <h3 class="is-size-4">Mot de passe:</h3>
+            <label>
+                <input class="input" style="margin-bottom: 1em" type='password' name='password_db' required/>
+            </label>
+            <h3 class="is-size-4">Addresse de la base de donnée:</h3>
+            <label>
+                <input class="input" style="margin-bottom: 1em" type='text' name='address_db' required/>
+            </label>
+            <h3 class="is-size-4">Port de la base de donnée:</h3>
+            <label>
+                <input class="input" style="margin-bottom: 1em" type='text' name='port_db' required/>
+            </label>
+            <button class="button is-primary" type="submit">Étape suivante!</button>
+        </form>
+    </div>
+</body>
+</html>
