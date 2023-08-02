@@ -24,12 +24,24 @@ def step1():
         except Exception as e:
             return redirect(url_for('step1', error="error_db"))
     else:
-        return render_template('install.html')
+        return render_template('step1.html')
 
 
-@app.route('/step2')
+@app.route('/step2', methods=["POST", "GET"])
 def step2():
-    return ""
+    if request.method == "POST":
+        try:
+            return redirect(url_for('step3'))
+        except Exception as e:
+            print(e)
+            return redirect(url_for('step2', error="error_db"))
+    else:
+        return render_template('step2.html')
+
+
+@app.route('/step3')
+def step3():
+    return ':")'
 
 
 if __name__ == '__main__':
