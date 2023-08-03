@@ -31,6 +31,7 @@ def step1():
 def step2():
     if request.method == "POST":
         try:
+            # Check value pour savoir quelle étape afficher ensuite.
             return redirect(url_for('step3'))
         except Exception as e:
             print(e)
