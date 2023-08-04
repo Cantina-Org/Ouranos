@@ -42,7 +42,7 @@ def step2():
 
 @app.route('/step3')
 def step3():
-    return ':")'
+    return ':0'
 
 
 if __name__ == '__main__':
