@@ -3,6 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="static/bulma.css">
+    <style>
+         /* The switch - the box around the slider */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        /* The slider */
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+    </style>
+    <script type="application/javascript">
+        function toggleInput() {
+            var input = document.getElementById("custom_path_div");
+            input.style.display = input.style.display === "none" ? "block" : "none";
+        }
+    </script>
     <title>Cantina - Installateur</title>
 </head>
 <body>
@@ -11,7 +81,19 @@
     </div>
     <div id="form" class="columns is-centered is-vcentered">
         <form action="#" method="post">
-            <button class="button is-primary" type="submit">Étape suivante!</button>
+            <h3 class="is-size-3">Voulez vous installer Néphélées dans un dossier particulier :</h3>
+            <label class="switch">
+                <input type="checkbox" name="nephelees" onclick="toggleInput()">
+                <span class="slider round"></span>
+            </label>
+            <div id="custom_path_div" style="display: none;">
+                <h3 class="is-size-4">Chemin de fichier personnaliser :</h3>
+                <label>
+                    <input class="input" style="margin-bottom: 1em" type='text' name='custom_path' required/>
+                </label>
+            </div>
+            <br>
+            <button class="button is-primary" style="margin-top: 1em" type="submit">Étape suivante!</button>
         </form>
     </div>
 </body>

@@ -32,12 +32,11 @@ def step1():
 def step2():
     global toolToInstall
     if request.method == "POST":
+        toolToInstall = []
         try:
-            # Check value pour savoir quelle étape afficher ensuite.
-            print(request.form["nephelees"])
-            if request.form['nephelees'] == "on":
+            if "nephelees" in request.form:
                 toolToInstall.append({"name": "nephelees", "config": {}})
-            if request.form['hermes'] == "on":
+            if "hermes" in request.form:
                 toolToInstall.append({"name": "hermes", "config": {}})
             return redirect(url_for('install_nephelees'))
         except Exception as e:
