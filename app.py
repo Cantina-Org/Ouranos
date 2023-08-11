@@ -62,8 +62,8 @@ def install_nephelees():
     else:
         print(toolToInstall)
         for item in toolToInstall:
-            if item["name"] == "hermes":
-                return render_template('install_hermes.html')
+            if item["name"] == "nephelees":
+                return render_template('install_nephelees.html')
 
         return redirect(url_for("step3"))
 
@@ -84,10 +84,11 @@ def install_hermes():
     else:
         print(toolToInstall)
         for item in toolToInstall:
-            if item["name"] == "nephelees":
+            if item["name"] == "hermes":
                 return render_template('install_hermes.html')
 
         return redirect(url_for("step3"))
+
 
 @app.route('/step3')
 def step3():
