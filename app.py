@@ -99,9 +99,25 @@ def install_olympe():
 
         toolToInstall.append({"name": "olympe", "config": config})
 
-        return toolToInstall
+        return redirect(url_for("install_cerbere"))
     else:
-        return render_template("install_hermes.html")
+        return render_template("install_olympe.html")
+
+
+@app.route('/step2/config/cerbere', methods=['POST', 'GET'])
+def install_cerbere():
+    global toolToInstall
+    if request.method == "POST":
+        config = {}
+        if "custom_path_switch" in request.form and "custom_path_input" in request.form:
+            config['custom_path'] = request.form["custom_path_input"]
+        config["web_addr"] = request.form["web_addr"]
+
+        toolToInstall.append({"name": "cerbere", "config": config})
+
+        return redirect(url_for("step3"))
+    else:
+        return render_template("install_cerbere.html")
 
 
 @app.route('/step3')
