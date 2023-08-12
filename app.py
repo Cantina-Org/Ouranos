@@ -60,12 +60,11 @@ def install_nephelees():
 
         return redirect(url_for("install_hermes"))
     else:
-        print(toolToInstall)
         for item in toolToInstall:
             if item["name"] == "nephelees":
                 return render_template('install_nephelees.html')
 
-        return redirect(url_for("step3"))
+        return redirect(url_for("install_hermes"))
 
 
 @app.route('/step2/config/hermes', methods=['POST', 'GET'])
@@ -80,14 +79,29 @@ def install_hermes():
             if item["name"] == "hermes":
                 item["config"] = config
 
-        return toolToInstall
+        return redirect(url_for("install_olympe"))
     else:
-        print(toolToInstall)
         for item in toolToInstall:
             if item["name"] == "hermes":
                 return render_template('install_hermes.html')
 
-        return redirect(url_for("step3"))
+        return redirect(url_for("install_olympe"))
+
+
+@app.route('/step2/config/olympe', methods=['POST', 'GET'])
+def install_olympe():
+    global toolToInstall
+    if request.method == "POST":
+        config = {}
+        if "custom_path_switch" in request.form and "custom_path_input" in request.form:
+            config['custom_path'] = request.form["custom_path_input"]
+        config["web_addr"] = request.form["web_addr"]
+
+        toolToInstall.append({"name": "olympe", "config": config})
+
+        return toolToInstall
+    else:
+        return render_template("install_hermes.html")
 
 
 @app.route('/step3')
