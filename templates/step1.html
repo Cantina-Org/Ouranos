@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="static/bulma.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bulma.css') }}">
     <script type="application/javascript">
         if (window.location.search === "?error=error_db"){
             alert("Un problème à été détecté avec la base de donnée. Verifier les identifiants et l'addresse de connection de la base de donneé")

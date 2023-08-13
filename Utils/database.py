@@ -29,7 +29,6 @@ class DataBase:
                     self.connector.commit()
                 else:
                     return "Error: Args Is Needed"
-                retry = False
                 return True
             except pymysql.InterfaceError:
                 self.cursor.close()
@@ -38,7 +37,6 @@ class DataBase:
                 retry = True
 
     def select(self, body, args=None, number_of_data=None):
-        data = None
         retry = True
         while retry:
             try:
@@ -52,7 +50,6 @@ class DataBase:
                     data = self.cursor.fetchone()
                 else:
                     data = self.cursor.fetchmany(number_of_data)
-                retry = False
                 return data
             except pymysql.InterfaceError:
                 self.cursor.close()

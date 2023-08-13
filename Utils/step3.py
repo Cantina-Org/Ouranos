@@ -5,8 +5,8 @@ from os import system
 def install_nephelees_back(db, step2data: dict, step1data: dict):
     db.insert("""CREATE DATABASE IF NOT EXISTS cantina_nephelees""")
     db.insert("CREATE TABLE IF NOT EXISTS cantina_nephelees.file_sharing(id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, "
-               "file_name TEXT, file_owner text, file_short_name TEXT, login_to_show BOOL DEFAULT 1, password TEXT,"
-               "date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)")
+              "file_name TEXT, file_owner text, file_short_name TEXT, login_to_show BOOL DEFAULT 1, password TEXT,"
+              "date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)")
 
     db.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""", ("nephelees",
                                                                                             step2data["web_addr"]))
