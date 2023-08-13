@@ -3,6 +3,7 @@ from Utils.database import DataBase
 from Utils.step_1 import createDatabaseStep1
 from Utils.step3 import *
 from argon2 import PasswordHasher
+from os import geteuid
 
 app = Flask(__name__)
 ph = PasswordHasher()
@@ -176,7 +177,7 @@ def step3():
 
 
 if __name__ == '__main__':
-    if os.geteuid() != 0:
+    if geteuid() != 0:
         exit("Vous devez avoir les privilèges de root pour exécuter ce script.\nVeuillez réessayer, en utilisant cette "
              "fois 'sudo'.")
     app.run()
