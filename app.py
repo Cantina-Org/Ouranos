@@ -1,10 +1,14 @@
 from flask import Flask, render_template, redirect, url_for, request
 from Utils.database import DataBase
 from Utils.step_1 import createDatabaseStep1
+from Utils.step3 import *
+from argon2 import PasswordHasher
 
 app = Flask(__name__)
+ph = PasswordHasher()
 db = None
 toolToInstall = []
+step1Info = {}
 
 
 @app.route('/')
@@ -14,14 +18,19 @@ def home():
 
 @app.route('/step1', methods=["POST", "GET"])
 def step1():
-    global db
+    global db, step1Info
     if request.method == "POST":
         try:
             db = DataBase(user=request.form["username_db"], password=request.form["password_db"],
                           host=request.form["address_db"], port=int(request.form["port_db"]))
             db.connection()
             createDatabaseStep1(database=db)
+            # Sauvegarde des infos données dans le formulaire.
+            for i in request.form:
+                step1Info[i] = request.form[i]
+
             return redirect(url_for("step2"))
+
         except Exception as e:
             return redirect(url_for('step1', error="error_db"))
     else:
@@ -122,6 +131,25 @@ def install_cerbere():
 
 @app.route('/step3')
 def step3():
+    # Création de l'utilisateur linux
+    system("sudo adduser cantina --system")
+    system("sudo addgroup cantina")
+    system("sudo usermod -a -G cantina cantina")
+
+    # Création de l'utilisateur
+    new_uuid = str(uuid3(uuid1(), str(uuid1())))
+    new_salt = new('sha256').hexdigest()
+
+    db.insert('''INSERT INTO cantina_administration.user(token, user_name, salt, password, admin) VALUES 
+    (%s, %s, %s, %s, %s)''', (new_uuid, step1Info["name"], new_salt, ph.hash(step1Info["passw"]), 1))
+
+    for item in toolToInstall:
+        if item["name"] == "nephelees":
+            if item["config"]["custom_path"]:
+                install_nephelees(db, item["config"]["custom_path"], step1Info)
+            else:
+                install_nephelees(db, "/home/cantina/", step1Info)
+
     return toolToInstall
 
 
