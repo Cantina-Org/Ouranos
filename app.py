@@ -146,10 +146,23 @@ def step3():
     for item in toolToInstall:
         if item["name"] == "nephelees":
             if item["config"]["custom_path"]:
-                install_nephelees(db, item["config"], step1Info)
+                install_nephelees_back(db, item["config"], step1Info)
             else:
                 item["config"]["custom_path"] = "/home/cantina/"
-                install_nephelees(db, item["config"], step1Info)
+                install_nephelees_back(db, item["config"], step1Info)
+
+        elif item["name"] == "hermes":
+            if item["config"]["custom_path"]:
+                install_hermes_back()
+            else:
+                install_hermes_back()
+
+        elif item["name"] == "hermes":
+            if item["config"]["custom_path"]:
+                install_olympe_back(db, item["config"], step1Info)
+            else:
+                item["config"]["custom_path"] = "/home/cantina/"
+                install_olympe_back(db, item["config"], step1Info)
 
     return "En théorie c'est bon"
 
