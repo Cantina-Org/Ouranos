@@ -146,11 +146,12 @@ def step3():
     for item in toolToInstall:
         if item["name"] == "nephelees":
             if item["config"]["custom_path"]:
-                install_nephelees(db, item["config"]["custom_path"], step1Info)
+                install_nephelees(db, item["config"], step1Info)
             else:
-                install_nephelees(db, "/home/cantina/", step1Info)
+                item["config"]["custom_path"] = "/home/cantina/"
+                install_nephelees(db, item["config"], step1Info)
 
-    return toolToInstall
+    return "En théorie c'est bon"
 
 
 if __name__ == '__main__':
