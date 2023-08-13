@@ -32,6 +32,7 @@ def step1():
             return redirect(url_for("step2"))
 
         except Exception as e:
+            print(e)
             return redirect(url_for('step1', error="error_db"))
     else:
         return render_template('step1.html')
@@ -175,4 +176,7 @@ def step3():
 
 
 if __name__ == '__main__':
+    if os.geteuid() != 0:
+        exit("Vous devez avoir les privilèges de root pour exécuter ce script.\nVeuillez réessayer, en utilisant cette "
+             "fois 'sudo'.")
     app.run()
