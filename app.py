@@ -157,12 +157,19 @@ def step3():
             else:
                 install_hermes_back()
 
-        elif item["name"] == "hermes":
+        elif item["name"] == "olympe":
             if item["config"]["custom_path"]:
                 install_olympe_back(db, item["config"], step1Info)
             else:
                 item["config"]["custom_path"] = "/home/cantina/"
                 install_olympe_back(db, item["config"], step1Info)
+
+        elif item["name"] == "cerbere":
+            if item["config"]["custom_path"]:
+                install_cerbere_back(db, item["config"], step1Info)
+            else:
+                item["config"]["custom_path"] = "/home/cantina/"
+                install_cerbere_back(db, item["config"], step1Info)
 
     return "En théorie c'est bon"
 

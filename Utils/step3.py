@@ -62,7 +62,7 @@ def install_olympe_back(db, step2data: dict, step1data: dict):
     with open(step2data['custom_path'] + '/Olympe/config.json', "w") as outfile:
         outfile.write(dumps(json_data, indent=4))
 
-    system("touch /etc/systemd/system/cantina-nephelees.service")
+    system("touch /etc/systemd/system/cantina-olympe.service")
     system(f"""echo '[Unit]
         Description=Cantina Olympe
         [Service]
@@ -74,3 +74,35 @@ def install_olympe_back(db, step2data: dict, step1data: dict):
     system(f"chown cantina:cantina {step2data['custom_path']}/*/*/*")
     system("systemctl enable cantina-olympe")
     system("systemctl start cantina-olympe")
+
+
+def install_cerbere_back(db, step2data: dict, step1data: dict):
+    db.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""", ("cerbere",
+                                                                                            step2data["web_addr"]))
+
+    system(f"cd {step2data['custom_path']} && git clone https://github.com/Cantina-Org/Cerbere.git")
+
+    json_data = {
+        "database": [{
+            "database_username": step1data['username_db'],
+            "database_password": step1data['password_db'],
+            "database_addresse": step1data['address_db'],
+            "database_port": step1data['port_db']
+        }],
+        "port": 2000
+    }
+    with open(step2data['custom_path'] + '/Cerbere/config.json', "w") as outfile:
+        outfile.write(dumps(json_data, indent=4))
+
+    system("touch /etc/systemd/system/cantina-cerbere.service")
+    system(f"""echo '[Unit]
+        Description=Cantina Cerbere
+        [Service]
+        User=cantina
+        WorkingDirectory={step2data['custom_path']}/Cerbere
+        ExecStart=python3 app.py
+        [Install]
+        WantedBy=multi-user.target' >> /etc/systemd/system/cantina-cerbere.service""")
+    system(f"chown cantina:cantina {step2data['custom_path']}/*/*/*")
+    system("systemctl enable cantina-cerbere")
+    system("systemctl start cantina-cerbere")
