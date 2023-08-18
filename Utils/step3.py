@@ -20,7 +20,7 @@ def install_nephelees_back(db, step2data: dict, step1data: dict):
             "database_addresse": step1data['address_db'],
             "database_port": step1data['port_db']
         }],
-        "port": 2001
+        "port": 3002
     }
     with open(step2data['custom_path'] + '/Nephelees/config.json', "w") as outfile:
         outfile.write(dumps(json_data, indent=4))
@@ -57,7 +57,7 @@ def install_olympe_back(db, step2data: dict, step1data: dict):
             "database_addresse": step1data['address_db'],
             "database_port": step1data['port_db']
         }],
-        "port": 2000
+        "port": 3000
     }
     with open(step2data['custom_path'] + '/Olympe/config.json', "w") as outfile:
         outfile.write(dumps(json_data, indent=4))
@@ -89,7 +89,7 @@ def install_cerbere_back(db, step2data: dict, step1data: dict):
             "database_addresse": step1data['address_db'],
             "database_port": step1data['port_db']
         }],
-        "port": 2000
+        "port": 3001
     }
     with open(step2data['custom_path'] + '/Cerbere/config.json', "w") as outfile:
         outfile.write(dumps(json_data, indent=4))
