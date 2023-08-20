@@ -155,9 +155,9 @@ def step3():
 
         elif item["name"] == "hermes":
             if item["config"]["custom_path"]:
-                install_hermes_back()
+                install_hermes_back(db, item["config"], step1Info)
             else:
-                install_hermes_back()
+                install_hermes_back(db, item["config"], step1Info)
 
         elif item["name"] == "olympe":
             if item["config"]["custom_path"]:

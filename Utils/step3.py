@@ -39,9 +39,21 @@ def install_nephelees_back(db, step2data: dict, step1data: dict):
     system("systemctl start cantina-nephelees")
 
 
-def install_hermes_back():
-    # TODO: fonction hermes
-    pass
+def install_hermes_back(db, step2data: dict, step1data: dict):
+    try:
+        # Exécutez la commande "node -v" pour obtenir la version de Node.js
+        subprocess.check_output(["node", "-v"])
+        print("Node.js est installé.")
+    except FileNotFoundError:
+        return "Node.js n'est pas installé."
+    except subprocess.CalledProcessError:
+        return "Node.js est installé, mais une erreur s'est produite lors de l'exécution de la commande."
+
+    db.insert("""CREATE DATABASE IF NOT EXISTS cantina_hermes""")
+    db.insert("""INSERT INTO cantina_hermes.domain(name, fqdn) VALUES (%s, %s)""", ("olympe",
+                                                                                            step2data["web_addr"]))
+
+    system(f"cd {step2data['custom_path']} && git clone https://github.com/Cantina-Org/Hermes.git")
 
 
 def install_olympe_back(db, step2data: dict, step1data: dict):
