@@ -175,7 +175,12 @@ def step3():
                 item["config"]["custom_path"] = "/home/cantina/"
                 install_cerbere_back(db, item["config"], step1Info)
 
-    return "En théorie c'est bon"
+    return render_template('final_word.html')
+
+
+@app.route('/Test')
+def test():
+    return render_template("final_word.html")
 
 
 if __name__ == '__main__':
