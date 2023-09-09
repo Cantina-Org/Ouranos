@@ -1,3 +1,5 @@
+from uuid import uuid3, uuid1
+from hashlib import new
 from flask import Flask, render_template, redirect, url_for, request
 from Utils.database import DataBase
 from Utils.step_1 import createDatabaseStep1
@@ -134,16 +136,16 @@ def install_cerbere():
 @app.route('/step3')
 def step3():
     # Création de l'utilisateur linux
-    system("sudo adduser cantina --system")
-    system("sudo addgroup cantina")
-    system("sudo usermod -a -G cantina cantina")
+    system("adduser cantina --system")
+    system("addgroup cantina")
+    system("usermod -a -G cantina cantina")
 
     # Création de l'utilisateur
     new_uuid = str(uuid3(uuid1(), str(uuid1())))
     new_salt = new('sha256').hexdigest()
 
     db.insert('''INSERT INTO cantina_administration.user(token, user_name, salt, password, admin) VALUES 
-    (%s, %s, %s, %s, %s)''', (new_uuid, step1Info["name"], new_salt, ph.hash(step1Info["passw"]), 1))
+    (%s, %s, %s, %s, %s)''', (new_uuid, step1Info["username_admin"], new_salt, ph.hash(step1Info["password_admin"]), 1))
 
     for item in toolToInstall:
         if item["name"] == "nephelees":
@@ -173,7 +175,12 @@ def step3():
                 item["config"]["custom_path"] = "/home/cantina/"
                 install_cerbere_back(db, item["config"], step1Info)
 
-    return "En théorie c'est bon"
+    return render_template('final_word.html')
+
+
+@app.route('/Test')
+def test():
+    return render_template("final_word.html")
 
 
 if __name__ == '__main__':

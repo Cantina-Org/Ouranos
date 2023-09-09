@@ -1,12 +1,15 @@
+import subprocess
+from json import dumps
+
 from werkzeug.utils import secure_filename
 from os import system
 
 
 def install_nephelees_back(db, step2data: dict, step1data: dict):
-    db.insert("""CREATE DATABASE IF NOT EXISTS cantina_nephelees""")
-    db.insert("CREATE TABLE IF NOT EXISTS cantina_nephelees.file_sharing(id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, "
-              "file_name TEXT, file_owner text, file_short_name TEXT, login_to_show BOOL DEFAULT 1, password TEXT,"
-              "date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)")
+    db.create_table("""CREATE DATABASE IF NOT EXISTS cantina_nephelees""")
+    db.create_table("CREATE TABLE IF NOT EXISTS cantina_nephelees.file_sharing(id INT PRIMARY KEY NOT NULL "
+                    "AUTO_INCREMENT, file_name TEXT, file_owner text, file_short_name TEXT, "
+                    "login_to_show BOOL DEFAULT 1, password TEXT, date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)")
 
     db.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""", ("nephelees",
                                                                                             step2data["web_addr"]))
@@ -48,10 +51,10 @@ def install_hermes_back(db, step2data: dict, step1data: dict):
     except subprocess.CalledProcessError:
         return "Node.js est installé, mais une erreur s'est produite lors de l'exécution de la commande."
 
-    db.insert("""CREATE DATABASE IF NOT EXISTS cantina_hermes""")
-    db.insert("""CREATE TABLE IF NOT EXISTS cantina_hermes.messages_stats(author TEXT, public_message BIGINT, 
+    db.create_table("""CREATE DATABASE IF NOT EXISTS cantina_hermes""")
+    db.create_table("""CREATE TABLE IF NOT EXISTS cantina_hermes.messages_stats(author TEXT, public_message BIGINT, 
     private_message BIGINT, last_messages DATE NOT NULL DEFAULT current_timestamp)""")
-    db.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""", ("olympe",
+    db.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""", ("hermes",
                                                                                             step2data["web_addr"]))
 
     system(f"cd {step2data['custom_path']} && git clone https://github.com/Cantina-Org/Hermes.git")
