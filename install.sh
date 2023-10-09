@@ -6,5 +6,5 @@ elif [ -f "/etc/debian-version" ]; then
   apt install python3 python3-pip
   apt install python-flask python-pyMySQL python-argon2_cffi
 fi
-
-python3 app.py
+git clone git@github.com:Cantina-Org/Ouranos.git
+python3 ./Ouranos/app.py
