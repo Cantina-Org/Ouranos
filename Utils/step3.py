@@ -1,7 +1,5 @@
 import subprocess
 from json import dumps
-
-from werkzeug.utils import secure_filename
 from os import system
 
 
