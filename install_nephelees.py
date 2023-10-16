@@ -65,3 +65,7 @@ custom_path = input("Quelle est le repertoire de stockage de Néphélées ? (Ent
 if custom_path == '':
     custom_path = os.getcwd()
     print(custom_path)
+
+os.system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/Nephelees.git")
+
+
