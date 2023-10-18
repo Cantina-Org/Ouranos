@@ -1,7 +1,6 @@
 from os import system, getcwd
 from json import dumps
 from Utils.database import DataBase
-from Utils.create_database import create_administration_database
 
 db_data = {}
 
@@ -17,12 +16,11 @@ print("Bienvenue dans l'installateur de Cantina Néphélees!")
 print('''
 ------------------------------------------------------------------------------------------------------------------------
 ''')
-db_data["username"] = 'cantina'  # input("Quelle est le nom d'utilisateur de la base de donnée : ")
-db_data["password"] = 'LeMdPDeTest'  # input("Quelle est le mots de passe de la base de donnée : ")
-db_data["address"] = '127.0.0.1'  # input("Quelle est l'addresse de la base de donnée : ")
-db_data["port"] = 3306  # int(input("Quelle est le port d'accès de la base de donnée: "))
+db_data["username"] = input("Quelle est le nom d'utilisateur de la base de donnée : ")
+db_data["password"] = input("Quelle est le mots de passe de la base de donnée : ")
+db_data["address"] = input("Quelle est l'addresse de la base de donnée : ")
+db_data["port"] = int(input("Quelle est le port d'accès de la base de donnée: "))
 
-print(db_data)
 database = DataBase(host=db_data["address"], port=db_data["port"], user=db_data["username"],
                     password=db_data['password'])
 try:
