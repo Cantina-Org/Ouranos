@@ -1,5 +1,5 @@
-import os
-
+from os import system, getcwd
+from json import dumps
 from Utils.database import DataBase
 from Utils.create_database import create_administration_database
 
@@ -63,9 +63,33 @@ custom_path = input("Quelle est le repertoire de stockage de Néphélées ? (Ent
                     "\nUn répertoire sera créer dans tout les cas!\n")
 
 if custom_path == '':
-    custom_path = os.getcwd()
+    custom_path = getcwd()
     print(custom_path)
 
-os.system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/Nephelees.git")
+system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/Nephelees.git")
 
+json_data = {
+        "database": [{
+            "database_username": db_data["username"],
+            "database_password": db_data["password"],
+            "database_addresse": db_data["address"],
+            "database_port": db_data["port"]
+        }],
+        "port": 3002
+    }
 
+with open(custom_path + '/Nephelees/config.json', "w") as outfile:
+    outfile.write(dumps(json_data, indent=4))
+
+system(f"""echo '[Unit]
+    Description=Cantina Néphélées
+    [Service]
+    User=cantina
+    WorkingDirectory={custom_path}/Nephelees
+    ExecStart=python3 app.py
+    [Install]
+    WantedBy=multi-user.target' >> /etc/systemd/system/cantina-nephelees.service""")
+
+system(f"chown cantina:cantina {custom_path}/*/*/*")
+system("systemctl enable cantina-nephelees")
+system("systemctl start cantina-nephelees")
