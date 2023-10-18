@@ -39,20 +39,10 @@ for db in data:
         break
     else:
         existing_instance = False
+        exit("Merci de d'abords installer l'outils Olympe!")
 
-print("Une instance de Cantina a été retrouvé dans la base de données.")
-wipe_db = input("Voulez vous réutiliser cette base de donnée? (Y/N) ")
+print("Une instance de Cantina a été retrouvé dans la base de données. Poursuite de la procédure...")
 
-while wipe_db not in ['Y', 'y', 'yes', 'N', 'n', 'no']:
-    wipe_db = input("Voulez vous réutiliser cette base de donnée? (Y/N) ")
-
-if wipe_db in ['N', 'n', 'no']:
-    print('Suppression de la base de donnée cantina_administration...')
-    database.insert('''DROP DATABASE cantina_administration''', ())
-    print('Création de la nouvelle base de donnée cantina_administration...')
-    create_administration_database(database)
-else:
-    print('Les informations de connexion à Cantina seront les mêmes que ceux déjà définie.')
 
 print('''
 ------------------------------------------------------------------------------------------------------------------------
