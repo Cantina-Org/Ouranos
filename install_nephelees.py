@@ -1,4 +1,4 @@
-from os import system, getcwd
+from os import system, getcwd, geteuid
 from json import dumps
 from Utils.database import DataBase
 
@@ -13,6 +13,10 @@ print('''  ______     ___      .__   __. .___________. __  .__   __.      ___
  \______/__/     \__\ |__| \__|     |__|     |__| |__| \__| /__/     \__\ ''')
 
 print("Bienvenue dans l'installateur de Cantina Néphélees!")
+
+if geteuid() == 0:
+    exit("Le script doit être lancée avec une permission d'administrateur!")
+
 print('''
 ------------------------------------------------------------------------------------------------------------------------
 ''')
