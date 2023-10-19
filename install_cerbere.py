@@ -12,7 +12,7 @@ print('''  ______     ___      .__   __. .___________. __  .__   __.      ___
 |  `----./  _____  \  |  |\   |     |  |     |  | |  |\   |  /  _____  \  
  \______/__/     \__\ |__| \__|     |__|     |__| |__| \__| /__/     \__\ ''')
 
-print("Bienvenue dans l'installateur de Cantina Néphélees!")
+print("Bienvenue dans l'installateur de Cantina Cerbere!")
 
 if geteuid() == 0:
     exit("Le script doit être lancée avec une permission d'administrateur!")
@@ -41,7 +41,7 @@ for db in data:
         break
     else:
         existing_instance = False
-        exit("Merci de d'abords installer l'outils Olympe!")
+        exit("Merci de d'abord installer l'outil Olympe !")
 
 print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
 
@@ -50,18 +50,18 @@ print('''
 ------------------------------------------------------------------------------------------------------------------------
 ''')
 
-web_address = input("Quel est l'adresse internet de Cantina Néphélées ? (example.example.com) ")
-custom_path = input("Quel est le repertoire de stockage de Néphélées ? (Enter = répertoire actuel + '/Nephelees/') "
+web_address = input("Quelle est l'adresse internet de Cantina Cerbere ? (example.example.com) ")
+custom_path = input("Quel est le répertoire de stockage de Cerbere ? (Enter = répertoire actuelle + '/Cerbere/') "
                     "\nUn répertoire sera créé dans tout les cas!\n")
 
 database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
-                ("nephelees", web_address))
+                ("cerbere", web_address))
 
 if custom_path == '':
     custom_path = getcwd()
     print(custom_path)
 
-system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/Nephelees.git")
+system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/Cerbere.git")
 
 json_data = {
         "database": [{
@@ -73,18 +73,18 @@ json_data = {
         "port": 3002
     }
 
-with open(custom_path + '/Nephelees/config.json', "w") as outfile:
+with open(custom_path + '/Cerbere/config.json', "w") as outfile:
     outfile.write(dumps(json_data, indent=4))
 
 system(f"""echo '[Unit]
-    Description=Cantina Néphélées
+    Description=Cantina Cerbere
     [Service]
     User=cantina
-    WorkingDirectory={custom_path}/Nephelees
+    WorkingDirectory={custom_path}/Cerbere
     ExecStart=python3 app.py
     [Install]
-    WantedBy=multi-user.target' >> /etc/systemd/system/cantina-nephelees.service""")
+    WantedBy=multi-user.target' >> /etc/systemd/system/cantina-cerbere.service""")
 
 system(f"chown cantina:cantina {custom_path}/*/*/*")
-system("systemctl enable cantina-nephelees")
-system("systemctl start cantina-nephelees")
+system("systemctl enable cantina-cerbere")
+system("systemctl start cantina-cerbere")
