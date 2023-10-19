@@ -12,7 +12,7 @@ print('''  ______     ___      .__   __. .___________. __  .__   __.      ___
 |  `----./  _____  \  |  |\   |     |  |     |  | |  |\   |  /  _____  \  
  \______/__/     \__\ |__| \__|     |__|     |__| |__| \__| /__/     \__\ ''')
 
-print("Bienvenue dans l'installateur de Cantina Néphélees!")
+print("Bienvenue dans l'installateur de Cantina Olympe!")
 
 if geteuid() == 0:
     exit("Le script doit être lancée avec une permission d'administrateur!")
@@ -41,24 +41,27 @@ for db in data:
         break
     else:
         existing_instance = False
-        exit("Merci de d'abords installer l'outils Olympe!")
 
-print("Une instance de Cantina a été retrouvé dans la base de données. Poursuite de la procédure...")
+if existing_instance:
+    print("Une instance de Cantina a été trouvé dans la base de données.")
+    wipe_db = input("Voullez vous supprimer les données de la base de données pour repartir de zéro? (Y/N)")
+else:
+    print("Aucune instance de Cantina a été trouvé. Poursuite de la procédure d'installation...")
 
 
 print('''
 ------------------------------------------------------------------------------------------------------------------------
 ''')
 
-web_address = input("Quelle est l'adresse internet de Cantina Néphélées ? (example.example.com) ")
-custom_path = input("Quelle est le repertoire de stockage de Néphélées ? (Enter = répertoire actuelle + '/Nephelees/') "
+web_address = input("Quelle est l'adresse internet de Cantina Olympe ? (example.example.com) ")
+custom_path = input("Quelle est le repertoire de stockage de Olympe ? (Enter = répertoire actuelle + '/olympe/') "
                     "\nUn répertoire sera créer dans tout les cas!\n")
 
 if custom_path == '':
     custom_path = getcwd()
     print(custom_path)
 
-system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/Nephelees.git")
+system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/Olympe.git")
 
 json_data = {
         "database": [{
@@ -67,21 +70,21 @@ json_data = {
             "database_addresse": db_data["address"],
             "database_port": db_data["port"]
         }],
-        "port": 3002
+        "port": 3000
     }
 
-with open(custom_path + '/Nephelees/config.json', "w") as outfile:
+with open(custom_path + '/Olympe/config.json', "w") as outfile:
     outfile.write(dumps(json_data, indent=4))
 
 system(f"""echo '[Unit]
-    Description=Cantina Néphélées
+    Description=Cantina Olympe
     [Service]
     User=cantina
-    WorkingDirectory={custom_path}/Nephelees
+    WorkingDirectory={custom_path}/Olympe
     ExecStart=python3 app.py
     [Install]
-    WantedBy=multi-user.target' >> /etc/systemd/system/cantina-nephelees.service""")
+    WantedBy=multi-user.target' >> /etc/systemd/system/cantina-olympe.service""")
 
 system(f"chown cantina:cantina {custom_path}/*/*/*")
-system("systemctl enable cantina-nephelees")
-system("systemctl start cantina-nephelees")
+system("systemctl enable cantina-olympe")
+system("systemctl start cantina-olympe")
