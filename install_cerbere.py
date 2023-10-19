@@ -20,10 +20,10 @@ if geteuid() == 0:
 print('''
 ------------------------------------------------------------------------------------------------------------------------
 ''')
-db_data["username"] = input("Quelle est le nom d'utilisateur de la base de donnée : ")
-db_data["password"] = input("Quelle est le mots de passe de la base de donnée : ")
-db_data["address"] = input("Quelle est l'addresse de la base de donnée : ")
-db_data["port"] = int(input("Quelle est le port d'accès de la base de donnée: "))
+db_data["username"] = input("Quel est le nom d'utilisateur de la base de données : ")
+db_data["password"] = input("Quel est le mot de passe de la base de données : ")
+db_data["address"] = input("Quelle est l'addresse de la base de données : ")
+db_data["port"] = int(input("Quel est le port d'accès de la base de données : "))
 
 database = DataBase(host=db_data["address"], port=db_data["port"], user=db_data["username"],
                     password=db_data['password'])
@@ -41,9 +41,9 @@ for db in data:
         break
     else:
         existing_instance = False
-        exit("Merci de d'abords installer l'outils Olympe!")
+        exit("Merci de d'abord installer l'outil Olympe !")
 
-print("Une instance de Cantina a été retrouvé dans la base de données. Poursuite de la procédure...")
+print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
 
 
 print('''
@@ -51,8 +51,8 @@ print('''
 ''')
 
 web_address = input("Quelle est l'adresse internet de Cantina Cerbere ? (example.example.com) ")
-custom_path = input("Quelle est le repertoire de stockage de Cerbere ? (Enter = répertoire actuelle + '/Cerbere/') "
-                    "\nUn répertoire sera créer dans tout les cas!\n")
+custom_path = input("Quel est le répertoire de stockage de Cerbere ? (Enter = répertoire actuelle + '/Cerbere/') "
+                    "\nUn répertoire sera créé dans tout les cas!\n")
 
 database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
                 ("cerbere", web_address))
