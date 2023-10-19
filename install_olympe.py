@@ -57,6 +57,9 @@ web_address = input("Quelle est l'adresse internet de Cantina Olympe ? (example.
 custom_path = input("Quelle est le repertoire de stockage de Olympe ? (Enter = répertoire actuelle + '/olympe/') "
                     "\nUn répertoire sera créer dans tout les cas!\n")
 
+database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
+                ("olympe", web_address))
+
 if custom_path == '':
     custom_path = getcwd()
     print(custom_path)

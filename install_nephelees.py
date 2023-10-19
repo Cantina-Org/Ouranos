@@ -54,6 +54,9 @@ web_address = input("Quelle est l'adresse internet de Cantina Néphélées ? (ex
 custom_path = input("Quelle est le repertoire de stockage de Néphélées ? (Enter = répertoire actuelle + '/Nephelees/') "
                     "\nUn répertoire sera créer dans tout les cas!\n")
 
+database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
+                ("nephelees", web_address))
+
 if custom_path == '':
     custom_path = getcwd()
     print(custom_path)
