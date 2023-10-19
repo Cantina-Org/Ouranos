@@ -15,15 +15,15 @@ print('''  ______     ___      .__   __. .___________. __  .__   __.      ___
 print("Bienvenue dans l'installateur de Cantina Olympe!")
 
 if geteuid() == 0:
-    exit("Le script doit être lancée avec une permission d'administrateur!")
+    exit("Le script doit être lancé avec une permission d'administrateur!")
 
 print('''
 ------------------------------------------------------------------------------------------------------------------------
 ''')
-db_data["username"] = input("Quelle est le nom d'utilisateur de la base de donnée : ")
-db_data["password"] = input("Quelle est le mots de passe de la base de donnée : ")
-db_data["address"] = input("Quelle est l'addresse de la base de donnée : ")
-db_data["port"] = int(input("Quelle est le port d'accès de la base de donnée: "))
+db_data["username"] = input("Quel est le nom d'utilisateur de la base de données : ")
+db_data["password"] = input("Quel est le mots de passe de la base de données : ")
+db_data["address"] = input("Quel est l'addresse de la base de données : ")
+db_data["port"] = int(input("Quel est le port d'accès de la base de données : "))
 
 database = DataBase(host=db_data["address"], port=db_data["port"], user=db_data["username"],
                     password=db_data['password'])
