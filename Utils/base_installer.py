@@ -24,7 +24,7 @@ def default_welcome_message(module):
         ''')
 
 
-def database_connection():
+def database_connection(module):
     db_data = {}
 
     db_data["username"] = inquirer.text(message="Username of your database :").execute()
@@ -43,9 +43,11 @@ def database_connection():
     data = database.select('SHOW DATABASES')
 
     for db in data:
+        if module == "Olympe":
+            print("Aucune instance de Cantina n'a été trouvée. Poursuite de la procédure d'installation...")
+            break
         if db[0] != 'cantina_administration':
             exit("Merci de d'abord installer l'outils Olympe !")
-
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
     print('''
