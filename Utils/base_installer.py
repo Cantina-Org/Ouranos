@@ -1,8 +1,7 @@
 from os import system, getcwd, geteuid
 from json import dumps
 from Utils.database import DataBase
-import typer
-from InquirerPy import prompt, inquirer
+from InquirerPy import inquirer
 import rich
 
 
@@ -57,7 +56,7 @@ def database_connection():
 
 
 def create_app(database, db_data, module):
-    web_address = inquirer.text(message=f"What is the Cantina {module} address (app.example.com) ?")
+    web_address = inquirer.text(message=f"What is the Cantina {module} address ({module.casefold()}.example.com) ?")
     custom_path = inquirer.filepath(message=f"Where will be the storage path of  Cantina {module} ? (Enter = {getcwd()}/{module}/)")
 
     database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
