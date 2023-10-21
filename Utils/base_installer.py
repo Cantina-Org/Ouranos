@@ -1,7 +1,9 @@
+import json
 from os import system, getcwd, geteuid
 from json import dumps
 from Utils.database import DataBase
 from InquirerPy import inquirer
+from InquirerPy.validator import NumberValidator
 import rich
 
 
@@ -25,13 +27,12 @@ def default_welcome_message(module):
 
 
 def database_connection(module):
-    db_data = {}
+    db_data = {"username": inquirer.text(message="Nom d'utilisateur de la base de données :").execute(),
+               "password": inquirer.secret(message="Mot de passe de la base de données :").execute(),
+               "address": inquirer.text(message="Adresse de la base de données :").execute(),
+               "port": inquirer.number(message="Port de la basse de donnée :", validate=NumberValidator()).execute()}
 
-    db_data["username"] = inquirer.text(message="Nom d'utilisateur de la base de données :").execute()
-    db_data["password"] = inquirer.secret(message="Mot de passe de la base de données :").execute()
-    db_data["address"] = inquirer.text(message="Adresse de la base de données :").execute()
-    db_data["port"] = inquirer.number(message="Port de la basse de donnée :").execute()
-    rich.print(db_data)
+    rich.print_json(json.dumps(db_data))
 
     database = DataBase(host=db_data["address"], port=str(db_data["port"]), user=db_data["username"],
                         password=db_data['password'])
