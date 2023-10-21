@@ -7,23 +7,17 @@ from InquirerPy.validator import NumberValidator
 import rich
 
 
-def default_welcome_message(module):
-        print('''  ______     ___      .__   __. .___________. __  .__   __.      ___      
-         /      |   /   \     |  \ |  | |           ||  | |  \ |  |     /   \     
-        |  ,----'  /  ^  \    |   \|  | `---|  |----`|  | |   \|  |    /  ^  \    
-        |  |      /  /_\  \   |  . `  |     |  |     |  | |  . `  |   /  /_\  \   
-        |  `----./  _____  \  |  |\   |     |  |     |  | |  |\   |  /  _____  \  
-         \______/__/     \__\ |__| \__|     |__|     |__| |__| \__| /__/     \__\ ''')
+def default_welcome_message():
+    print('''  ______     ___      .__   __. .___________. __  .__   __.      ___      
+ /      |   /   \     |  \ |  | |           ||  | |  \ |  |     /   \     
+|  ,----'  /  ^  \    |   \|  | `---|  |----`|  | |   \|  |    /  ^  \    
+|  |      /  /_\  \   |  . `  |     |  |     |  | |  . `  |   /  /_\  \   
+|  `----./  _____  \  |  |\   |     |  |     |  | |  |\   |  /  _____  \  
+ \______/__/     \__\ |__| \__|     |__|     |__| |__| \__| /__/     \__\ ''')
 
+    if geteuid() == 0:
+        exit("Le script doit être lancée avec une permission d'administrateur!")
 
-        print(f"Bienvenue dans l'installateur de Cantina {module} !")
-
-        if geteuid() == 0:
-            exit("Le script doit être lancée avec une permission d'administrateur!")
-
-        print('''
-        ------------------------------------------------------------------------------------------------------------------------
-        ''')
 
 
 def database_connection(module):
