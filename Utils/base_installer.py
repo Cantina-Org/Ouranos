@@ -27,10 +27,11 @@ def default_welcome_message(module):
 def database_connection(module):
     db_data = {}
 
-    db_data["username"] = inquirer.text(message="Username of your database :").execute()
-    db_data["password"] = inquirer.secret(message="Password of your database :").execute()
-    db_data["address"] = inquirer.text(message="Adress/Host of your database :").execute()
-    db_data["port"] = inquirer.number(message="Port of your database :").execute()
+    db_data["username"] = inquirer.text(message="Nom d'utilisateur de la base de données :").execute()
+    db_data["password"] = inquirer.secret(message="Mot de passe de la base de données :").execute()
+    db_data["address"] = inquirer.text(message="Adresse de la base de données :").execute()
+    db_data["port"] = inquirer.number(message="Port de la basse de donnée :").execute()
+    rich.print(db_data)
 
     database = DataBase(host=db_data["address"], port=str(db_data["port"]), user=db_data["username"],
                         password=db_data['password'])
@@ -58,8 +59,8 @@ def database_connection(module):
 
 
 def create_app(database, db_data, module):
-    web_address = inquirer.text(message=f"What is the Cantina {module} address ({module.casefold()}.example.com) ?")
-    custom_path = inquirer.filepath(message=f"Where will be the storage path of  Cantina {module} ? (Enter = {getcwd()}/{module}/)")
+    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example.com) ?")
+    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/{module}/)")
 
     database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
                     (f"{module.casefold()}", web_address))
