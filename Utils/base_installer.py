@@ -15,9 +15,10 @@ def default_welcome_message():
 |  `----./  _____  \  |  |\   |     |  |     |  | |  |\   |  /  _____  \  
  \______/__/     \__\ |__| \__|     |__|     |__| |__| \__| /__/     \__\ ''')
 
-    if geteuid() == 0:
+    if geteuid() != 0:
         exit("Le script doit être lancée avec une permission d'administrateur!")
-
+    else:
+        print(geteuid())
 
 
 def database_connection(module):
