@@ -12,14 +12,11 @@ print('''  ______     ___      .__   __. .___________. __  .__   __.      ___
 |  `----./  _____  \  |  |\   |     |  |     |  | |  |\   |  /  _____  \  
  \______/__/     \__\ |__| \__|     |__|     |__| |__| \__| /__/     \__\ ''')
 
-print("Bienvenue dans l'installateur de Cantina Olympe!")
 
 if geteuid() == 0:
     exit("Le script doit être lancé avec une permission d'administrateur!")
 
-print('''
-------------------------------------------------------------------------------------------------------------------------
-''')
+
 db_data["username"] = input("Quel est le nom d'utilisateur de la base de données : ")
 db_data["password"] = input("Quel est le mots de passe de la base de données : ")
 db_data["address"] = input("Quel est l'addresse de la base de données : ")
