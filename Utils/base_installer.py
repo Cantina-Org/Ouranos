@@ -38,13 +38,14 @@ def database_connection(module):
         exit('Une erreur est survenue lors de la connexion à MariaDB/MySQL!')
 
     data = database.select('SHOW DATABASES')
+    already_an_instance = False
 
     for db in data:
-        if module == "Olympe":
-            print("Aucune instance de Cantina n'a été trouvée. Poursuite de la procédure d'installation...")
-            break
-        if db[0] != 'cantina_administration':
-            exit("Merci de d'abord installer l'outils Olympe !")
+        if db[0] == 'cantina_administration':
+            already_an_instance = True
+            
+    if not already_an_instance:
+        exit("Merci de d'abord installer l'outils Olympe !")
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
     print('''
