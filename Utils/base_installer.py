@@ -56,8 +56,8 @@ def database_connection(module):
 
 
 def create_app(database, db_data, module):
-    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example.com) ?")
-    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/{module}/)")
+    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example.com) ?").execute()
+    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/{module}/)").execute()
 
     database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
                     (f"{module.casefold()}", web_address))
@@ -78,7 +78,7 @@ def create_app(database, db_data, module):
             "port": 3002
         }
 
-    with open(custom_path + f'/{module}/config.json', "w") as outfile:
+    with open(str(custom_path) + f'/{module}/config.json', "w") as outfile:
         outfile.write(dumps(json_data, indent=4))
 
     system(f"""echo '[Unit]
