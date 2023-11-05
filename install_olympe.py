@@ -13,7 +13,7 @@ print('''  ______     ___      .__   __. .___________. __  .__   __.      ___
  \______/__/     \__\ |__| \__|     |__|     |__| |__| \__| /__/     \__\ ''')
 
 
-if geteuid() == 0:
+if geteuid() != 0:
     exit("Le script doit être lancé avec une permission d'administrateur!")
 
 

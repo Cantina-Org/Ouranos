@@ -29,7 +29,7 @@ def database_connection(module):
 
     rich.print_json(json.dumps(db_data))
 
-    database = DataBase(host=db_data["address"], port=str(db_data["port"]), user=db_data["username"],
+    database = DataBase(host=db_data["address"], port=int(db_data["port"]), user=db_data["username"],
                         password=db_data['password'])
 
     try:
@@ -38,13 +38,14 @@ def database_connection(module):
         exit('Une erreur est survenue lors de la connexion à MariaDB/MySQL!')
 
     data = database.select('SHOW DATABASES')
+    already_an_instance = False
 
     for db in data:
-        if module == "Olympe":
-            print("Aucune instance de Cantina n'a été trouvée. Poursuite de la procédure d'installation...")
-            break
-        if db[0] != 'cantina_administration':
-            exit("Merci de d'abord installer l'outils Olympe !")
+        if db[0] == 'cantina_administration':
+            already_an_instance = True
+            
+    if not already_an_instance:
+        exit("Merci de d'abord installer l'outils Olympe !")
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
     print('''
@@ -55,8 +56,8 @@ def database_connection(module):
 
 
 def create_app(database, db_data, module):
-    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example.com) ?")
-    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/{module}/)")
+    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example.com) ?").execute()
+    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/{module}/)").execute()
 
     database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
                     (f"{module.casefold()}", web_address))
@@ -77,7 +78,7 @@ def create_app(database, db_data, module):
             "port": 3002
         }
 
-    with open(custom_path + f'/{module}/config.json', "w") as outfile:
+    with open(str(custom_path) + f'/{module}/config.json', "w") as outfile:
         outfile.write(dumps(json_data, indent=4))
 
     system(f"""echo '[Unit]
