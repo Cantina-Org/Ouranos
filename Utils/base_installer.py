@@ -1,10 +1,16 @@
-import json
+from uuid import uuid3, uuid1
+from create_database import create_administration_database
 from os import system, getcwd, geteuid
 from json import dumps
 from Utils.database import DataBase
 from InquirerPy import inquirer
 from InquirerPy.validator import NumberValidator
+from argon2 import PasswordHasher
 import rich
+import json
+
+
+ph = PasswordHasher()
 
 
 def default_welcome_message():
@@ -43,8 +49,27 @@ def database_connection(module):
     for db in data:
         if db[0] == 'cantina_administration':
             already_an_instance = True
-            
-    if not already_an_instance:
+
+    if not already_an_instance and module == "Olympe":
+        print("Création de la base de données...")
+        create_administration_database(database)
+
+        print("Création du premier utilisateur :")
+        new_uuid = str(uuid3(uuid1(), str(uuid1())))
+        user_data = {"username": inquirer.text(message="Nom d'utilisateur Cantina :").execute(),
+                     "password": inquirer.secret(message="Mot de passe de l'utilisateur Cantina :").execute(),
+                     "verif_password": inquirer.secret(message="Mot de passe de l'utilisateur Cantina :").execute()}
+
+        while user_data["password"] != user_data["verif_password"]:
+            print("Les deux mots de passe ne correspondent pas!")
+            user_data = {"username": inquirer.text(message="Nom d'utilisateur Cantina :").execute(),
+                         "password": inquirer.secret(message="Mot de passe de l'utilisateur Cantina :").execute(),
+                         "verif_password": inquirer.secret(message="Mot de passe de l'utilisateur Cantina :").execute()}
+
+        database.insert('''INSERT INTO cantina_administration.user(token, user_name, password, admin, work_Dir) 
+        VALUES (%s, %s, %s, %s, %s)''', (new_uuid, user_data["username"],  ph.hash(user_data["password"]), 1, None))
+
+    elif not already_an_instance and module != "Olympe":
         exit("Merci de d'abord installer l'outils Olympe !")
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
