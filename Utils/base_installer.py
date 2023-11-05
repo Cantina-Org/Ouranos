@@ -81,8 +81,10 @@ def database_connection(module):
 
 
 def create_app(database, db_data, module):
-    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example.com) ?").execute()
-    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/{module}/)").execute()
+    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example"
+                                        f".com) ?").execute()
+    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/"
+                                            f"{module}/)").execute()
 
     database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
                     (f"{module.casefold()}", web_address))
