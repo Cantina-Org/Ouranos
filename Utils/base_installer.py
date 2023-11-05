@@ -29,7 +29,7 @@ def database_connection(module):
 
     rich.print_json(json.dumps(db_data))
 
-    database = DataBase(host=db_data["address"], port=str(db_data["port"]), user=db_data["username"],
+    database = DataBase(host=db_data["address"], port=int(db_data["port"]), user=db_data["username"],
                         password=db_data['password'])
 
     try:
