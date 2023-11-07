@@ -1,10 +1,16 @@
-import json
+from uuid import uuid3, uuid1
+from create_database import create_administration_database
 from os import system, getcwd, geteuid
 from json import dumps
 from Utils.database import DataBase
 from InquirerPy import inquirer
 from InquirerPy.validator import NumberValidator
+from argon2 import PasswordHasher
 import rich
+import json
+
+
+ph = PasswordHasher()
 
 
 def default_welcome_message():
@@ -29,7 +35,7 @@ def database_connection(module):
 
     rich.print_json(json.dumps(db_data))
 
-    database = DataBase(host=db_data["address"], port=str(db_data["port"]), user=db_data["username"],
+    database = DataBase(host=db_data["address"], port=int(db_data["port"]), user=db_data["username"],
                         password=db_data['password'])
 
     try:
@@ -38,13 +44,33 @@ def database_connection(module):
         exit('Une erreur est survenue lors de la connexion à MariaDB/MySQL!')
 
     data = database.select('SHOW DATABASES')
+    already_an_instance = False
 
     for db in data:
-        if module == "Olympe":
-            print("Aucune instance de Cantina n'a été trouvée. Poursuite de la procédure d'installation...")
-            break
-        if db[0] != 'cantina_administration':
-            exit("Merci de d'abord installer l'outils Olympe !")
+        if db[0] == 'cantina_administration':
+            already_an_instance = True
+
+    if not already_an_instance and module == "Olympe":
+        print("Création de la base de données...")
+        create_administration_database(database)
+
+        print("Création du premier utilisateur :")
+        new_uuid = str(uuid3(uuid1(), str(uuid1())))
+        user_data = {"username": inquirer.text(message="Nom d'utilisateur Cantina :").execute(),
+                     "password": inquirer.secret(message="Mot de passe de l'utilisateur Cantina :").execute(),
+                     "verif_password": inquirer.secret(message="Mot de passe de l'utilisateur Cantina :").execute()}
+
+        while user_data["password"] != user_data["verif_password"]:
+            print("Les deux mots de passe ne correspondent pas!")
+            user_data = {"username": inquirer.text(message="Nom d'utilisateur Cantina :").execute(),
+                         "password": inquirer.secret(message="Mot de passe de l'utilisateur Cantina :").execute(),
+                         "verif_password": inquirer.secret(message="Mot de passe de l'utilisateur Cantina :").execute()}
+
+        database.insert('''INSERT INTO cantina_administration.user(token, user_name, password, admin, work_Dir) 
+        VALUES (%s, %s, %s, %s, %s)''', (new_uuid, user_data["username"],  ph.hash(user_data["password"]), 1, None))
+
+    elif not already_an_instance and module != "Olympe":
+        exit("Merci de d'abord installer l'outils Olympe !")
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
     print('''
@@ -55,8 +81,10 @@ def database_connection(module):
 
 
 def create_app(database, db_data, module):
-    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example.com) ?")
-    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/{module}/)")
+    web_address = inquirer.text(message=f"Adresse de l'application Cantina {module} ? ({module.casefold()}.example"
+                                        f".com) ?").execute()
+    custom_path = inquirer.filepath(message=f"Où seront stockés les données de Cantina {module} ? (Enter = {getcwd()}/"
+                                            f"{module}/)").execute()
 
     database.insert("""INSERT INTO cantina_administration.domain(name, fqdn) VALUES (%s, %s)""",
                     (f"{module.casefold()}", web_address))
@@ -77,7 +105,7 @@ def create_app(database, db_data, module):
             "port": 3002
         }
 
-    with open(custom_path + f'/{module}/config.json', "w") as outfile:
+    with open(str(custom_path) + f'/{module}/config.json', "w") as outfile:
         outfile.write(dumps(json_data, indent=4))
 
     system(f"""echo '[Unit]

@@ -1,7 +1,7 @@
 def create_administration_database(database):
     database.create_table("""CREATE DATABASE IF NOT EXISTS cantina_administration""")
     database.create_table("""CREATE TABLE IF NOT EXISTS cantina_administration.user(id INT PRIMARY KEY NOT NULL 
-        AUTO_INCREMENT, token TEXT, user_name TEXT, salt TEXT, password TEXT, admin BOOL, work_Dir text, 
+        AUTO_INCREMENT, token TEXT, user_name TEXT, password TEXT, admin BOOL, work_Dir text, 
         last_online TEXT)""")
     database.create_table("""CREATE TABLE IF NOT EXISTS  cantina_administration.log(id INT PRIMARY KEY NOT NULL 
         AUTO_INCREMENT, name TEXT, user_ip TEXT, user_token TEXT, argument TEXT, log_level INT, date TIMESTAMP DEFAULT 
