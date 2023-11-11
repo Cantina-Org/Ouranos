@@ -1,11 +1,12 @@
 from uuid import uuid3, uuid1
-from create_database import create_administration_database
+from Utils.create_database import *
 from os import system, getcwd, geteuid
 from json import dumps
 from Utils.database import DataBase
 from InquirerPy import inquirer
 from InquirerPy.validator import NumberValidator
 from argon2 import PasswordHasher
+from unidecode import unidecode
 import rich
 import json
 
@@ -52,7 +53,7 @@ def database_connection(module):
 
     if not already_an_instance and module == "Olympe":
         print("Création de la base de données...")
-        create_administration_database(database)
+        create_olympe_database(database)
 
         print("Création du premier utilisateur :")
         new_uuid = str(uuid3(uuid1(), str(uuid1())))
@@ -71,6 +72,9 @@ def database_connection(module):
 
     elif not already_an_instance and module != "Olympe":
         exit("Merci de d'abord installer l'outils Olympe !")
+
+    elif already_an_instance and module != "Olympe":
+        globals()['create_' + unidecode(str.lower(module)) + '_database']()
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
     print('''

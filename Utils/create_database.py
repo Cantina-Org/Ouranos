@@ -1,4 +1,4 @@
-def create_administration_database(database):
+def create_olympe_database(database):
     database.create_table("""CREATE DATABASE IF NOT EXISTS cantina_administration""")
     database.create_table("""CREATE TABLE IF NOT EXISTS cantina_administration.user(id INT PRIMARY KEY NOT NULL 
         AUTO_INCREMENT, token TEXT, user_name TEXT, password TEXT, admin BOOL, work_Dir text, 
