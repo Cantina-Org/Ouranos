@@ -2,7 +2,7 @@ import subprocess
 from json import dumps
 from os import system
 
-
+# Plus supporté
 def install_hermes_back(db, step2data: dict, step1data: dict):
     try:
         # Exécutez la commande "node -v" pour obtenir la version de Node.js
