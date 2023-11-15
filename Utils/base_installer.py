@@ -1,15 +1,13 @@
-from uuid import uuid3, uuid1
-from Utils.create_database import *
-from os import system, getcwd, geteuid
+import json
 from json import dumps
-from Utils.database import DataBase
+from os import system, getcwd, geteuid
+from uuid import uuid3, uuid1
+import rich
 from InquirerPy import inquirer
 from InquirerPy.validator import NumberValidator
 from argon2 import PasswordHasher
 from unidecode import unidecode
-import rich
-import json
-
+from Utils.database import DataBase
 
 ph = PasswordHasher()
 
@@ -74,7 +72,8 @@ def database_connection(module):
         exit("Merci de d'abord installer l'outils Olympe !")
 
     elif already_an_instance and module != "Olympe":
-        globals()['create_' + unidecode(str.lower(module)) + '_database']()
+        module_to_import = unidecode(str.lower(module))
+        globals()['create_' + unidecode(str.lower(module)) + '_database'](database, )
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
     print('''
