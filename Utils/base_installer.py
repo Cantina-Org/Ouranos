@@ -1,6 +1,6 @@
 import json
 from json import dumps
-from os import system, getcwd, geteuid
+from os import system, getcwd, geteuid, path, sep
 from uuid import uuid3, uuid1
 import rich
 from InquirerPy import inquirer
@@ -51,7 +51,27 @@ def database_connection(module):
 
     if not already_an_instance and module == "Olympe":
         print("Création de la base de données...")
-        create_olympe_database(database)
+
+        try:
+            chemin_du_fichier = 'SpecialInstaller.Olympe.py'
+
+            chemin_absolu = path.dirname(path.abspath(__file__))
+            chemin_complet = path.join(chemin_absolu, chemin_du_fichier.replace('.', sep))
+
+            # Importation dynamique du module
+            module = __import__(chemin_complet, fromlist=['create_olympe_database'])
+
+            # Accéder à l'attribut spécifique
+            attribut = getattr(module, 'create_olympe_database')
+
+            # Vérifier si l'attribut est une fonction et l'appeler si c'est le cas
+            if callable(attribut):
+                # Appeler la fonction importée
+                attribut()
+            else:
+                print("L'attribut spécifié n'est pas une fonction.")
+        except (ImportError, AttributeError):
+            print("Impossible d'importer le module ou l'attribut spécifié.")
 
         print("Création du premier utilisateur :")
         new_uuid = str(uuid3(uuid1(), str(uuid1())))
