@@ -53,7 +53,7 @@ def database_connection(module):
         print("Création de la base de données...")
 
         try:
-            chemin_du_fichier = 'SpecialInstaller.Olympe.py'
+            chemin_du_fichier = 'Utils.SpecialInstaller.Olympe'
 
             chemin_absolu = path.dirname(path.abspath(__file__))
             chemin_complet = path.join(chemin_absolu, chemin_du_fichier.replace('.', sep))
