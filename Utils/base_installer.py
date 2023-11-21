@@ -92,7 +92,6 @@ def database_connection(module):
         exit("Merci de d'abord installer l'outils Olympe !")
 
     elif already_an_instance and module != "Olympe":
-        module_to_import = unidecode(str.lower(module))
         globals()['create_' + unidecode(str.lower(module)) + '_database'](database, )
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
