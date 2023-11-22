@@ -1,11 +1,10 @@
 from json import dumps
-from os import system, getcwd, geteuid, path, sep
+from os import system, getcwd, geteuid
 from uuid import uuid3, uuid1
 from rich import print_json
 from InquirerPy import inquirer
 from InquirerPy.validator import NumberValidator
 from argon2 import PasswordHasher
-from unidecode import unidecode
 from Utils.database import DataBase
 from importlib import util
 
