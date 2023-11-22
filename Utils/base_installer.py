@@ -110,8 +110,6 @@ def create_app(database, db_data, module):
         [Install]
         WantedBy=multi-user.target' >> /etc/systemd/system/cantina-{module.casefold()}.service""")
 
-    system(f"chown cantina:cantina {custom_path}/*/*/*")
-
     auto_start = (inquirer.confirm(message=f"Voullez vous démarer Cantina {module} à chaque lancement du serveur hôte?")
                   .execute())
     if auto_start:
