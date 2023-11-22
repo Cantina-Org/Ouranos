@@ -73,7 +73,7 @@ def database_connection(module):
         exit("Merci de d'abord installer l'outils Olympe !")
 
     elif already_an_instance and module != "Olympe":
-        globals()['create_' + unidecode(str.lower(module)) + '_database'](database, )
+        import_and_execute_installer_module(module, 'create_' + str(module).lower() + '_database', database)
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
     print('''
@@ -98,18 +98,8 @@ def create_app(database, db_data, module):
 
     system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/{module}.git")
 
-    json_data = {
-            "database": [{
-                "database_username": db_data["username"],
-                "database_password": db_data["password"],
-                "database_address": db_data["address"],
-                "database_port": db_data["port"]
-            }],
-            "port": 3002
-        }
-
-    with open(str(custom_path) + f'/{module}/config.json', "w") as outfile:
-        outfile.write(dumps(json_data, indent=4))
+    import_and_execute_installer_module(module, 'create_' + str(module).lower() + '_app', database, web_addr=web_address,
+                                        db_data=db_data, custom_path=custom_path)
 
     system(f"""echo '[Unit]
         Description=Cantina {module}
@@ -121,11 +111,18 @@ def create_app(database, db_data, module):
         WantedBy=multi-user.target' >> /etc/systemd/system/cantina-{module.casefold()}.service""")
 
     system(f"chown cantina:cantina {custom_path}/*/*/*")
-    system(f"systemctl enable cantina-{module.casefold()}")
-    system(f"systemctl start cantina-{module.casefold()}")
+
+    auto_start = (inquirer.confirm(message=f"Voullez vous démarer Cantina {module} à chaque lancement du serveur hôte?")
+                  .execute())
+    if auto_start:
+        system(f"systemctl enable cantina-{module.casefold()}")
+        system(f"systemctl start cantina-{module.casefold()}")
+    else:
+        pass
 
 
-def import_and_execute_installer_module(file_name, module_name, database):
+def import_and_execute_installer_module(file_name, module_name, database,
+                                        web_addr=None, db_data=None, custom_path=None):
     chemin_du_fichier = 'Utils.SpecialInstaller.' + file_name
 
     try:
@@ -140,8 +137,8 @@ def import_and_execute_installer_module(file_name, module_name, database):
             fonction = getattr(module, module_name)
             if module_name.endswith('_database'):
                 fonction(database)
-            else:
-                pass
+            elif module_name.endswith('_app'):
+                fonction(database=database, web_addr=web_addr, custom_path=custom_path, db_data=db_data)
         else:
             print("La fonction spécifiée n'existe pas dans le module.")
     except ImportError as e:
