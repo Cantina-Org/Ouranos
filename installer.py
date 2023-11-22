@@ -8,4 +8,3 @@ to_install = inquirer.select("Quel application Cantina voulez vous installer ?",
                                                                                           "Cerbere"]).execute()
 database, db_data = base_installer.database_connection(to_install)
 base_installer.create_app(database, db_data, to_install)
-

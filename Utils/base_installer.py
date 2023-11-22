@@ -1,13 +1,13 @@
-import json
 from json import dumps
 from os import system, getcwd, geteuid, path, sep
 from uuid import uuid3, uuid1
-import rich
+from rich import print_json
 from InquirerPy import inquirer
 from InquirerPy.validator import NumberValidator
 from argon2 import PasswordHasher
 from unidecode import unidecode
 from Utils.database import DataBase
+from importlib import util
 
 ph = PasswordHasher()
 
@@ -32,7 +32,7 @@ def database_connection(module):
                "address": inquirer.text(message="Adresse de la base de données :").execute(),
                "port": inquirer.number(message="Port de la basse de donnée :", validate=NumberValidator()).execute()}
 
-    rich.print_json(json.dumps(db_data))
+    print_json(dumps(db_data))
 
     database = DataBase(host=db_data["address"], port=int(db_data["port"]), user=db_data["username"],
                         password=db_data['password'])
@@ -52,26 +52,7 @@ def database_connection(module):
     if not already_an_instance and module == "Olympe":
         print("Création de la base de données...")
 
-        try:
-            chemin_du_fichier = 'Utils.SpecialInstaller.Olympe'
-
-            chemin_absolu = path.dirname(path.abspath(__file__))
-            chemin_complet = path.join(chemin_absolu, chemin_du_fichier.replace('.', sep))
-
-            # Importation dynamique du module
-            module = __import__(chemin_complet, fromlist=['create_olympe_database'])
-
-            # Accéder à l'attribut spécifique
-            attribut = getattr(module, 'create_olympe_database')
-
-            # Vérifier si l'attribut est une fonction et l'appeler si c'est le cas
-            if callable(attribut):
-                # Appeler la fonction importée
-                attribut()
-            else:
-                print("L'attribut spécifié n'est pas une fonction.")
-        except (ImportError, AttributeError):
-            print("Impossible d'importer le module ou l'attribut spécifié.")
+        import_and_execute_installer_module('Olympe', 'create_olympe_database', database)
 
         print("Création du premier utilisateur :")
         new_uuid = str(uuid3(uuid1(), str(uuid1())))
@@ -142,3 +123,26 @@ def create_app(database, db_data, module):
     system(f"chown cantina:cantina {custom_path}/*/*/*")
     system(f"systemctl enable cantina-{module.casefold()}")
     system(f"systemctl start cantina-{module.casefold()}")
+
+
+def import_and_execute_installer_module(file_name, module_name, database):
+    chemin_du_fichier = 'Utils.SpecialInstaller.' + file_name
+
+    try:
+        # Importez le module dynamiquement
+        module_spec = util.find_spec(chemin_du_fichier)
+        module = util.module_from_spec(module_spec)
+        module_spec.loader.exec_module(module)
+
+        # Vérifiez si la fonction spécifiée existe dans le module
+        if hasattr(module, module_name) and callable(getattr(module, module_name)):
+            # Obtenez la référence de la fonction et appelez-la
+            fonction = getattr(module, module_name)
+            if module_name.endswith('_database'):
+                fonction(database)
+            else:
+                pass
+        else:
+            print("La fonction spécifiée n'existe pas dans le module.")
+    except ImportError as e:
+        print("Impossible d'importer le module ou l'attribut spécifié. " + str(e))
