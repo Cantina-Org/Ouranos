@@ -1,14 +1,12 @@
-from uuid import uuid3, uuid1
-from create_database import create_administration_database
-from os import system, getcwd, geteuid
 from json import dumps
-from Utils.database import DataBase
+from os import system, getcwd, geteuid
+from uuid import uuid3, uuid1
+from rich import print_json
 from InquirerPy import inquirer
 from InquirerPy.validator import NumberValidator
 from argon2 import PasswordHasher
-import rich
-import json
-
+from Utils.database import DataBase
+from importlib import util
 
 ph = PasswordHasher()
 
@@ -33,7 +31,7 @@ def database_connection(module):
                "address": inquirer.text(message="Adresse de la base de données :").execute(),
                "port": inquirer.number(message="Port de la basse de donnée :", validate=NumberValidator()).execute()}
 
-    rich.print_json(json.dumps(db_data))
+    print_json(dumps(db_data))
 
     database = DataBase(host=db_data["address"], port=int(db_data["port"]), user=db_data["username"],
                         password=db_data['password'])
@@ -52,7 +50,8 @@ def database_connection(module):
 
     if not already_an_instance and module == "Olympe":
         print("Création de la base de données...")
-        create_administration_database(database)
+
+        import_and_execute_installer_module('Olympe', 'create_olympe_database', database)
 
         print("Création du premier utilisateur :")
         new_uuid = str(uuid3(uuid1(), str(uuid1())))
@@ -71,6 +70,9 @@ def database_connection(module):
 
     elif not already_an_instance and module != "Olympe":
         exit("Merci de d'abord installer l'outils Olympe !")
+
+    elif already_an_instance and module != "Olympe":
+        import_and_execute_installer_module(module, 'create_' + str(module).lower() + '_database', database)
 
     print("Une instance de Cantina a été retrouvée dans la base de données. Poursuite de la procédure...")
     print('''
@@ -95,18 +97,8 @@ def create_app(database, db_data, module):
 
     system(f"cd {custom_path} && git clone https://github.com/Cantina-Org/{module}.git")
 
-    json_data = {
-            "database": [{
-                "database_username": db_data["username"],
-                "database_password": db_data["password"],
-                "database_address": db_data["address"],
-                "database_port": db_data["port"]
-            }],
-            "port": 3002
-        }
-
-    with open(str(custom_path) + f'/{module}/config.json', "w") as outfile:
-        outfile.write(dumps(json_data, indent=4))
+    import_and_execute_installer_module(module, 'create_' + str(module).lower() + '_app', database, web_addr=web_address,
+                                        db_data=db_data, custom_path=custom_path)
 
     system(f"""echo '[Unit]
         Description=Cantina {module}
@@ -117,6 +109,34 @@ def create_app(database, db_data, module):
         [Install]
         WantedBy=multi-user.target' >> /etc/systemd/system/cantina-{module.casefold()}.service""")
 
-    system(f"chown cantina:cantina {custom_path}/*/*/*")
-    system(f"systemctl enable cantina-{module.casefold()}")
-    system(f"systemctl start cantina-{module.casefold()}")
+    auto_start = (inquirer.confirm(message=f"Voullez vous démarer Cantina {module} à chaque lancement du serveur hôte?")
+                  .execute())
+    if auto_start:
+        system(f"systemctl enable cantina-{module.casefold()}")
+        system(f"systemctl start cantina-{module.casefold()}")
+    else:
+        pass
+
+
+def import_and_execute_installer_module(file_name, module_name, database,
+                                        web_addr=None, db_data=None, custom_path=None):
+    chemin_du_fichier = 'Utils.SpecialInstaller.' + file_name
+
+    try:
+        # Importez le module dynamiquement
+        module_spec = util.find_spec(chemin_du_fichier)
+        module = util.module_from_spec(module_spec)
+        module_spec.loader.exec_module(module)
+
+        # Vérifiez si la fonction spécifiée existe dans le module
+        if hasattr(module, module_name) and callable(getattr(module, module_name)):
+            # Obtenez la référence de la fonction et appelez-la
+            fonction = getattr(module, module_name)
+            if module_name.endswith('_database'):
+                fonction(database)
+            elif module_name.endswith('_app'):
+                fonction(database=database, web_addr=web_addr, custom_path=custom_path, db_data=db_data)
+        else:
+            print("La fonction spécifiée n'existe pas dans le module.")
+    except ImportError as e:
+        print("Impossible d'importer le module ou l'attribut spécifié. " + str(e))
